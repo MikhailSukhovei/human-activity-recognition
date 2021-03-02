@@ -46,3 +46,7 @@ GSYMS
 GTAGS
 TODO-INTERNAL
 *.pid
+
+# exclude data and output folders
+data/
+output/
