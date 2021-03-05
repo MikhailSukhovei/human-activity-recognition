@@ -50,3 +50,6 @@ TODO-INTERNAL
 # exclude data and output folders
 data/
 output/
+
+# exlude Knil .html documents
+*.html
