@@ -22,8 +22,8 @@ y_train_path <- file.path(data_path, "train", "y_train.txt")
 X_test_path <- file.path(data_path, "test", "X_test.txt")
 y_test_path <- file.path(data_path, "test", "y_test.txt")
 
-subject_train_path <- file.path(train_path, "subject_train.txt")
-subject_test_path <- file.path(test_path, "subject_test.txt")
+subject_train_path <- file.path(data_path, "train", "subject_train.txt")
+subject_test_path <- file.path(data_path, "test", "subject_test.txt")
 
 features_path <- file.path(data_path, "features.txt")
 activity_labels_path <- file.path(data_path, "activity_labels.txt")
