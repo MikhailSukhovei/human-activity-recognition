@@ -1,0 +1,96 @@
+---
+title: "Codebook"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: 'hide'
+    self_contained: true
+  pdf_document:
+    toc: yes
+    toc_depth: 4
+    latex_engine: xelatex
+---
+
+Here, we're just setting a few options.
+
+```{r setup}
+knitr::opts_chunk$set(
+  warning = TRUE, # show warnings during codebook generation
+  message = TRUE, # show messages during codebook generation
+  error = TRUE, # do not interrupt codebook generation in case of errors,
+                # usually better for debugging
+  echo = TRUE  # show R code
+)
+ggplot2::theme_set(ggplot2::theme_bw())
+
+```
+
+Now, we're preparing our data for the codebook.
+
+```{r prepare_codebook}
+library(codebook)
+codebook_data <- read.csv(file.path(".", "data", "processed", "tidy.csv"))
+
+# If you are not using formr, the codebook package needs to guess which items
+# form a scale. The following line finds item aggregates with names like this:
+# scale = scale_1 + scale_2R + scale_3R
+# identifying these aggregates allows the codebook function to
+# automatically compute reliabilities.
+# However, it will not reverse items automatically.
+codebook_data <- detect_scales(codebook_data)
+
+# The description of each variable is decrypted automatically according to
+# features_info.txt
+abbreviates <- c(
+    "^t",
+    "^f",
+    "Body",
+    "Gravity",
+    "AccJerk",
+    "GyroJerk",
+    "Acc",
+    "Gyro",
+    "Mag",
+    "\\.X",
+    "\\.Y",
+    "\\.Z",
+    "\\.mean",
+    "\\.std"
+)
+descriptions <- c(
+    "Time domain ",
+    "Frequency domain ",
+    "body ",
+    "gravity ",
+    "jerk ",
+    "angular jerk ",
+    "acceleration ",
+    "rotation position ",
+    "magnitude ",
+    "in the X direction.",
+    "in the y direction.",
+    "in the z direction.",
+    "estimated mean value ",
+    "estimated standart deviation value "
+)
+description <- names(codebook_data)
+for (i in 1:length(abbreviates)) {
+    description <- gsub(abbreviates[i], descriptions[i], description)
+}
+description <- gsub(" $", ".", description)
+names(description) = names(codebook_data)
+
+# Adding and Changing Metadata
+var_label(codebook_data) <- description
+metadata(codebook_data)$name <- "Human Activity Recognition Using Smartphones Data Set"
+metadata(codebook_data)$description <- "The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. The original dataset can be found at the URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones. This dataset contains values for preprocessed accelerometer and gyroscope signal characteristics (mean values and standard deviation) in X, Y, Z projections and their magnitudes: body acceleration, gravity acceleration, body jerk, angular jerk, rotation position. These characteristics were averaged for each pair of subject (30 persons) and activity label (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING). Total 180 rows. Features in original dataset are normalized and bounded within [-1,1]."
+```
+
+
+Create codebook
+
+```{r codebook}
+codebook(codebook_data)
+```
